@@ -7,11 +7,14 @@ import { v4 as uuid } from "uuid";
 interface Props {
   inputState: Array<any>;
   chatLogState: Array<any>;
+  activeEngineState: Array<any>;
 }
 
-function ChatInput({ inputState, chatLogState }: Props) {
+function ChatInput({ inputState, chatLogState, activeEngineState }: Props) {
   const [input, setInput] = inputState;
   const [chatLog, setChatLog] = chatLogState;
+  const [activeEngine, setActiveEngine] = activeEngineState;
+
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -29,8 +32,10 @@ function ChatInput({ inputState, chatLogState }: Props) {
         return;
     }
 
+    const newChatLog = [...chatLog, { user: "User", message: input }];
+
     // Set chat log
-    setChatLog([...chatLog, { user: "User", message: input }]);
+    setChatLog(newChatLog);
 
     // Clear input
     setInput("");
@@ -50,18 +55,17 @@ function ChatInput({ inputState, chatLogState }: Props) {
         },
       ];
     });
-    console.log('before')
 
     var AIResponse = "";
+
     // Send message to AI and populate chat log
     try {
-        AIResponse = await OPENAI_sendMessage(input);
+        AIResponse = await OPENAI_sendMessage(newChatLog, activeEngine, false);
     }
     catch (err) {
-        AIResponse = "Något gick fel, försök igen senare";
+        console.error(err)
+        AIResponse = "Något gick fel, försök igen senare.";
     }
-
-    console.log('after')
 
     // Add AI message
     setChatLog((prev: any) => {
@@ -73,6 +77,8 @@ function ChatInput({ inputState, chatLogState }: Props) {
         return [...prev];
     });
 
+    // Save current chatLog to localStorage
+    localStorage.setItem("chatLog", JSON.stringify(newChatLog));
     setIsLoading(false);
   };
 
@@ -85,7 +91,7 @@ function ChatInput({ inputState, chatLogState }: Props) {
       <input
         ref={inputRef}
         autoFocus
-        className="w-full resize-none ring-primary animate-shake focus:border-primary focus:border outline-none shadow-lg py-4 px-5 text-lg p-3 border-black border border-1 hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:border-gray-300"
+        className="w-full resize-none ring-primary focus:border-primary focus:border outline-none shadow-lg py-4 px-5 text-lg p-3 border-black border border-1 hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:border-gray-300"
         value={input}
         onChange={(e) => {
           setInput(e.target.value);

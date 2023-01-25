@@ -10,22 +10,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { prompt } = req.body;
+  const { request } = req.query;
 
   const configuration = new Configuration({
     organization: process.env.OPENAPI_ORG_ID,
     apiKey: process.env.OPENAI_API_KEY,
   });
 
-  const openai = new OpenAIApi(configuration);
+    const openai = new OpenAIApi(configuration);
+    const resposne = await openai.listEngines();
 
-  // Send a completion request
-  const completion = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: prompt,
-    max_tokens: 1500,
-    temperature: 2,
-  });
-
-  res.status(200).json({ response: prompt +  ' - ' + completion.data.choices[0].text });
+    res.status(200).json({ response: resposne.data });
 }

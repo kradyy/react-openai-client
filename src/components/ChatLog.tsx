@@ -23,7 +23,7 @@ function ChatLog({chatLogState}: Props) {
                         </div> */}
                     </div>
                 ) : (
-                  <div key={index} className="botMessage flex flex-col h-full animate-fadeIn">
+                  <div key={index} className="botMessage whitespace-pre-wrap flex flex-col h-full animate-fadeIn">
                     <div className="flex flex-row px-5 py-3 justify-start items-center">
                         <Image src="/openai.svg" className="w-8 h-8 object-center" alt="OpenAI" width={200} height={200} />
                           <div className="text-black p-4 w-full">
