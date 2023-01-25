@@ -9,8 +9,6 @@ interface Props {
 function ChatLog({chatLogState}: Props) {
   const [chatLog, setChatLog] = chatLogState;
 
-  console.log(chatLog)
-
   return (
     <div className="flex flex-col">
             {chatLog.length > 0 ? chatLog.map((chat, index) => (
@@ -29,7 +27,8 @@ function ChatLog({chatLogState}: Props) {
                     <div className="flex flex-row px-5 py-3 justify-start items-center">
                         <Image src="/openai.svg" className="w-8 h-8 object-center" alt="OpenAI" width={200} height={200} />
                           <div className="text-black p-4 w-full">
-                            <strong>AI </strong>
+                            {!chat?.loading && <strong>AI </strong>}
+
                             {chat?.loading ? (
                                 <ThreeDots 
                                   height="30" 

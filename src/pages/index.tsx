@@ -15,7 +15,6 @@ export default function Home() {
 
   useEffect(() => {
         if (mainRef.current) {
-          console.log('scrolling')
            mainRef.current.scrollTop = mainRef.current.scrollHeight;
         }
   }, [chatLog])
