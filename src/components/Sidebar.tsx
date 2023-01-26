@@ -38,9 +38,13 @@ function Sidebar({setIsSideBarOpen, isSidebarOpen, chatLogState, activeEngineSta
 
   useEffect(() => {
     const fetchEngines = async () => {
-      //const { response: { data } } = await OPENAI_getEngines();
-      setActiveEngine(engines[0].id);
-      setAllEnginesList(engines || []);
+      const { response: { data } } = await OPENAI_getEngines();
+
+      // Set first davinci as default engine
+      var davinci = data.filter((engine: any) => engine.id.includes('text-davinci-00'));
+
+      setActiveEngine(davinci ? davinci[0].id : data[0].id);
+      setAllEnginesList(data || []);
     }
     fetchEngines();
   }, [])
@@ -67,7 +71,7 @@ function Sidebar({setIsSideBarOpen, isSidebarOpen, chatLogState, activeEngineSta
             <label className="text-white text-xs font-light p-3">AI Modell</label>
               <select onChange={(e) => setActiveEngine(e.target.value)} className="bg-transparent text-white text-xs font-bold p-3 rounded-md w-full mt-3 w-[80%]">
                 {enginesList.map((engine, index) => (
-                  <option key={index} value={engine.id}>{engine.text}</option>
+                  <option key={index} value={engine.id} selected={engine.id == activeEngine}>{engine.id}</option>
                 ))}
               </select>
               </div>
@@ -84,10 +88,7 @@ function Sidebar({setIsSideBarOpen, isSidebarOpen, chatLogState, activeEngineSta
           <hr className="border-white/10 py-2" />
 
           </div>
-
-   
-          <Image src="/logo.webp" className="mt-auto mx-auto w-12 pb-10" alt="OpenAI Logo" width={200} height={200} />
-        </div>
+          </div>
   )
 }
 
